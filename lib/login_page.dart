@@ -1,16 +1,106 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sign_in/my_textfield.dart';
 import 'package:sign_in/mybutton.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
 
-  final usernameController = TextEditingController();
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final emailController = TextEditingController();
+
   final passwordController = TextEditingController();
 
-  void signUserIn() {}
+  void signUserIn() async {
+    showDialog(context: context, builder: (context) {
+      return const Center(child:CircularProgressIndicator(),);
+    },);
+    await FirebaseAuth.instance.signInWithEmailAndPassword(email:emailController.text , password: passwordController.text);
+
+    Navigator.pop(context);
+
+    try {
+  await FirebaseAuth.instance.signInWithEmailAndPassword(
+    email: emailController.text,
+    password: passwordController.text,
+  );
+  Navigator.pop(context);
+} on FirebaseAuthException catch (e) {
+  if (e.code == 'user-not-found') {
+   showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Invalid Password'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+  } else if (e.code == 'wrong-password') {
+   showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Invalid Email'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+  }
+}
+
+void throwwrongEmail() {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Invalid Email'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void throwwrongPassword() {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Invalid Password'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +125,7 @@ class LoginPage extends StatelessWidget {
               height: 25,
             ),
             MyTextField(
-              controller: usernameController,
+              controller: emailController,
               hintText: 'Email.',
               obscureText: false,
             ),
