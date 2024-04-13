@@ -1,41 +1,48 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sign_in/auth.dart';
 import 'package:sign_in/my_textfield.dart';
 import 'package:sign_in/mybutton.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final Function()? onTap;
 
-  LoginPage({super.key , required this.onTap});
+  RegisterPage({super.key , required this.onTap});
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmpasswordController = TextEditingController();
+Future<void> signUserUp() async {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    },
+  );
 
-  Future<void> signUserIn() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+  try {
+    if (passwordController.text == confirmpasswordController.text){
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      showErrorMessage(e.code);
-    }}
+      // Registration successful, you might want to navigate to the next screen or perform any other actions here.
+    } else {
+      showErrorMessage("Passwords don't match");
+    }
+    Navigator.pop(context);
+  } on FirebaseAuthException catch (e) {
+    Navigator.pop(context);
+    showErrorMessage(e.message!); // Using e.message instead of e.code for clearer error messages
+  }
+}
+
+   
     void showErrorMessage(String message){
       showDialog(context: context,builder: (context) {
         return  AlertDialog(
@@ -63,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 20),
               const Text(
-                'Welcome Back, User',
+                'Register here',
                 style: TextStyle(fontSize: 17),
               ),
               const SizedBox(height: 25),
@@ -76,6 +83,11 @@ class _LoginPageState extends State<LoginPage> {
               MyTextField(
                 controller: passwordController,
                 hintText: 'Password',
+                obscureText: true,
+              ),
+              MyTextField(
+                controller: confirmpasswordController,
+                hintText: 'Confirm Password',
                 obscureText: true,
               ),
               const SizedBox(height: 10),
@@ -97,21 +109,21 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 5),
               MyButton(
-                onTap: signUserIn,
+                onTap: signUserUp,
               ),
               const SizedBox(height: 12),
               const Text('Or continue with:'),
               const SizedBox(height: 12),
-             GestureDetector (child:   Image.asset('lib/images/google.png', height: 40),onTap: ()=> AuthService().signInWithGoogle(),),
+              Image.asset('lib/images/google.png', height: 40),
                SizedBox(height: 25,),
                 Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                    Text('Not a member?'),
+                    Text('Already Logged In?'),
                   GestureDetector(
                     onTap: widget.onTap,
             
-                  child: Text('Register now!',style: TextStyle(color: Colors.blue),),
+                  child: Text('Login now!',style: TextStyle(color: Colors.blue),),
                ),],
               )
             ],

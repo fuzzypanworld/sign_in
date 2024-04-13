@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:sign_in/hompage.dart';
+import 'package:sign_in/login_or_register.dart';
 import 'package:sign_in/login_page.dart';
 
 class AuthPage extends StatelessWidget {
@@ -18,7 +19,7 @@ class AuthPage extends StatelessWidget {
           return Homepage();
         }
         else {
-          return LoginPage();
+          return LoginOrRegister();
         }
       },
       ),
