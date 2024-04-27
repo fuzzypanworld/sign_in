@@ -7,7 +7,7 @@ import 'package:sign_in/mybutton.dart';
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
 
-  LoginPage({super.key , required this.onTap});
+  LoginPage({super.key, required this.onTap});
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -15,7 +15,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
+  
   Future<void> signUserIn() async {
     showDialog(
       context: context,
@@ -35,18 +35,25 @@ class _LoginPageState extends State<LoginPage> {
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       showErrorMessage(e.code);
-    }}
-    void showErrorMessage(String message){
-      showDialog(context: context,builder: (context) {
-        return  AlertDialog(
-          backgroundColor: Colors.amber,
-          title: Center(child: Text(message,style: const TextStyle(color: Colors.white),),),
-        );
-       },
-      );
-     }
-    
+    }
+  }
 
+  void showErrorMessage(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.amber,
+          title: Center(
+            child: Text(
+              message,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,17 +109,25 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 12),
               const Text('Or continue with:'),
               const SizedBox(height: 12),
-             GestureDetector (child:   Image.asset('lib/images/google.png', height: 40),onTap: ()=> AuthService().signInWithGoogle(),),
-               SizedBox(height: 25,),
-                Row(
+              GestureDetector(
+                child: Image.asset('lib/images/google.png', height: 40),
+                onTap: () => AuthService().signInWithGoogle(),
+              ),
+              SizedBox(
+                height: 25,
+              ),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                    Text('Not a member?'),
+                  Text('Not a member?'),
                   GestureDetector(
                     onTap: widget.onTap,
-            
-                  child: Text('Register now!',style: TextStyle(color: Colors.blue),),
-               ),],
+                    child: Text(
+                      'Register now!',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ],
               )
             ],
           ),
